@@ -16,6 +16,7 @@ pipeline{
         stage("Maven Build"){
             steps{
                 sh "mvn clean sonar:sonar package"
+                sh "mv target/*.war target/myapp.war"
                 
             }
         }
@@ -27,7 +28,7 @@ stage('Upload War To Nexus'){
                     [
                      artifactId: 'myweb', 
                         classifier: '',
-                         file: 'target/myweb-8.2.1.war', 
+                         file: 'target/myapp.war', 
                                         type: 'war']
                               ],
                      credentialsId: 'nexus',
@@ -44,7 +45,7 @@ stage('Upload War To Nexus'){
             steps{
                 sshagent(['tomcat']) {
                 sh """
-                    scp -o StrictHostKeyChecking=no target/myweb-8.2.1.war  ec2-user@172.31.33.179:/home/ec2-user/apache-tomcat-9.0.68/webapps/
+                    scp -o StrictHostKeyChecking=no target/myapp.war  ec2-user@172.31.33.179:/home/ec2-user/apache-tomcat-9.0.68/webapps/
                     
                     ssh ec2-user@172.31.33.179 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
                     
