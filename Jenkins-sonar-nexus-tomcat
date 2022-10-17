@@ -48,7 +48,7 @@ stage('Upload War To Nexus'){
                     
                     ssh ec2-user@172.31.33.179 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
                     
-                    ssh ec2-user@172.31.33.179 /home/ec2-user/apache-tomcat-9.0.65/bin/startup.sh
+                    ssh ec2-user@172.31.33.179 /home/ec2-user/apache-tomcat-9.0.68/bin/startup.sh
                 
                 """
             }
