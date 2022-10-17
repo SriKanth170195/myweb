@@ -1,6 +1,8 @@
 pipeline{
     agent any
-   
+    tools {
+        maven 'Maven-3.6.1'
+    }
     environment{
         PATH = "/opt/maven3/bin:$PATH"
     }
@@ -12,9 +14,7 @@ pipeline{
         }
         stage("Maven Build"){
             steps{
-                sh "mvn clean sonar:sonar package"
-                sh "mv target/*.war target/myapp.war"
-                
+                sh "mvn clean sonar:sonar package"                
             }
         }
        
@@ -25,10 +25,10 @@ stage('Upload War To Nexus'){
                     [
                      artifactId: 'myweb', 
                         classifier: '',
-                         file: 'target/myapp.war', 
+                         file: 'target/myweb-8.2.1.war', 
                                         type: 'war']
                               ],
-                     credentialsId: 'nexus',
+                     credentialsId: 'nexus3',
                              groupId: 'in.javahome',
                              nexusUrl: '172.31.42.253:8081',
                                  nexusVersion: 'nexus3',
@@ -40,9 +40,9 @@ stage('Upload War To Nexus'){
        
         stage("deploy-dev"){
             steps{
-                sshagent(['tomcat']) {
+                sshagent(['tomcatone']) {
                 sh """
-                    scp -o StrictHostKeyChecking=no target/myapp.war  ec2-user@172.31.33.179:/home/ec2-user/apache-tomcat-9.0.68/webapps/
+                    scp -o StrictHostKeyChecking=no target/myweb-8.2.1.war  ec2-user@172.31.33.179:/home/ec2-user/apache-tomcat-9.0.68/webapps/
                     
                     ssh ec2-user@172.31.33.179 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
                     
