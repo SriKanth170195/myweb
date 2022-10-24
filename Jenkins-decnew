@@ -20,11 +20,11 @@ pipeline{
             steps{
                 sshagent(['dec-pipeline']) {
                 sh """
-                    scp -o StrictHostKeyChecking=no target/myapp.war  ec2-user@172.31.46.163:/home/ec2-user/apache-tomcat-9.0.68/webapps/
+                    scp -o StrictHostKeyChecking=no target/myapp.war  ec2-user@172.31.41.41:/home/ec2-user/apache-tomcat-9.0.68/webapps/
                     
-                    ssh ec2-user@172.31.46.163 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
+                    ssh ec2-user@172.31.41.41 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
                     
-                    ssh ec2-user@172.31.46.163 /home/ec2-user/apache-tomcat-9.0.68/bin/startup.sh
+                    ssh ec2-user@172.31.41.41 /home/ec2-user/apache-tomcat-9.0.68/bin/startup.sh
                 
                 """
             }
