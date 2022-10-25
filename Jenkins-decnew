@@ -38,18 +38,8 @@ pipeline{
         
         
         stage("deploy-dev"){
-            steps{
-                sshagent(['DecPipelin']) {
-                sh """
-                    scp -o StrictHostKeyChecking=no target/myweb-8.2.1.war  ec2-user@172.31.42.209:/home/ec2-user/apache-tomcat-9.0.68/webapps/
-                    
-                    ssh ec2-user@172.31.42.209 /home/ec2-user/apache-tomcat-9.0.68/bin/shutdown.sh
-                    
-                    ssh ec2-user@172.31.42.209 /home/ec2-user/apache-tomcat-9.0.68/bin/startup.sh
-                
-                """
-            }
-            
+             steps{
+                ansiblePlaybook credentialsId: 'DecPipelin', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'dev.in', playbook: 'copy.yml'
             }
         }
     }
