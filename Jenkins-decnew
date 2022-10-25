@@ -13,7 +13,6 @@ pipeline{
         stage("Maven Build"){
             steps{
                 sh "mvn clean sonar:sonar package"
-                sh "mv target/*.war target/mynewapp.war"  
             }
         }
         
