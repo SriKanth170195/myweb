@@ -12,15 +12,39 @@ pipeline{
         }
         stage("Maven Build"){
             steps{
+					
                  sh "mvn clean package"
-                sh "mv target/*.war target/myweb.war"               
+                sh "mv target/*.war target/myweb.war" 
+				
+			
+                sh "mvn clean sonar:sonar package"
             }
         }
+        
+        stage('Upload War To Nexus'){
+            steps{
+            
+                nexusArtifactUploader artifacts: [
+                    [
+                     artifactId: 'myweb', 
+                        classifier: '',
+                         file: 'target/myweb-8.2.1.war', 
+                                        type: 'war']
+                              ],
+                     credentialsId: 'nexus3',
+                             groupId: 'in.javahome',
+                             nexusUrl: '172.31.45.133:8081',
+                                 nexusVersion: 'nexus3',
+                             protocol: 'http', 
+                            repository: 'release',
+                             version: '8.2.1'               
+              }
+            }
         
         
         stage("deploy-dev"){
              steps{
-                ansiblePlaybook credentialsId: 'DecPipelin', disableHostKeyChecking: true, installation: 'Ansible2', inventory: 'dev.in', playbook: 'copy.yml'
+                ansiblePlaybook credentialsId: 'DecPipelin', disableHostKeyChecking: true, installation: 'ansible2', inventory: 'dev.in', playbook: 'copy.yml'
             }
         }
     }
